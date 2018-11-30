@@ -755,9 +755,9 @@ var playState = {
 
     },
 
-    add : function(a,b){
-        return (a+b);
-    },
+    // add : function(a,b){
+    //     return (a+b);
+    // },
 
 
     updateTargetStudent: function() {
