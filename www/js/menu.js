@@ -26,4 +26,6 @@ var menuState = {
     game.state.start('instructions');
   }
 
-}
+};
+
+export default menuState;

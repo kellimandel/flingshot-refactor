@@ -13,4 +13,6 @@ var loseState = {
     schoolbell.pause();
     game.state.start('play');
   }
-}
+};
+
+export default loseState;

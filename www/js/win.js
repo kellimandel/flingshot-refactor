@@ -11,5 +11,7 @@ var winState = {
   restartGame : function() {
     game.state.start('play');
   }
+};
 
-}
+
+export default winState;

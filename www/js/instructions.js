@@ -1,3 +1,5 @@
+let instructionDisplay;
+
 var instructionsState = {
     create : function(){
         var string = 'Touch anywhere to hit the students!';
@@ -19,4 +21,6 @@ var instructionsState = {
         game.state.start('play');
 
     }
-}
+};
+
+export default instructionsState;

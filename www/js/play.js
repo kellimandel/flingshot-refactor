@@ -3,9 +3,6 @@
 // window.onload = config;
 import Ball from './ball.js';
 
-// const Ball = require('./ball.js');
-
-
 
 var timerColor = "#00ff00";
 var scoreColor = "rgba(255,255,255,0.7)";
@@ -93,7 +90,7 @@ let balballInSlingshot;
 let studNum;
 
 
-window.playState = {
+var playState = {
 
 
     create : function(){
@@ -496,19 +493,19 @@ updateLevelUp: function(){
             ballInSlingshot.setXVelocity(Xvector);
             ballInSlingshot.setYVelocity(Yvector);
             ballInSlingshot.setZVelocity( - arrowLengthY / 10);
-            ballsInMotion.push(ballInSlingshot.sprite);
+            ballsInMotion.push(ballInSlingshot);
             ballInSlingshot = new Ball(game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
         }
         playState.hideArrow();
     },
 
     updateBalls : function () {
-        for (i=0; i< ballsInMotion.length ; i++){
+        for (var i=0; i< ballsInMotion.length ; i++){
             if (ballsInMotion[i].getTimesHitFloor() > 4){
                 ballsInMotion[i].kill();
                 ballsInMotion.splice(i, 1);
             } else{
-                playState.updateBallSize(ballsInMotion[i].sprite);
+                playState.updateBallSize(ballsInMotion[i]);
             }
         }
     },
@@ -522,11 +519,11 @@ updateLevelUp: function(){
                 ball.moveZ();
                 var size = 0.15/(1 + ball.getZ()*0.003);
                 ball.setScale(size,size);
-                ball.setFloor((screenheight + 300) / (1 + ball.getZ() * 0.01));
+                ball.setFloor((window.screenheight + 300) / (1 + ball.getZ() * 0.01));
             }
         }
         if(ball.getY() >= ball.getFloor()){
-            playState.bounceOffFloor(ball.getSprite());
+            playState.bounceOffFloor(ball);
         }
     },
 
@@ -761,7 +758,7 @@ updateLevelUp: function(){
     },
 
     teacherHit: function(ball){
-        game.physics.arcade.collide(ball.getSprite(), teacher, this.screenshake(), null, this);
+        game.physics.arcade.collide(ball, teacher, this.screenshake(), null, this);
 
     },
 
@@ -875,7 +872,6 @@ updateLevelUp: function(){
     }
     // Trying to put in a progress bar
 
+};
 
-}
-
-// export default playState;
+export default playState;

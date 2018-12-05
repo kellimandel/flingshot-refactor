@@ -8,5 +8,7 @@ var bootState = {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.state.start('load');
   }
-}
+};
+
+export default bootState;
 
