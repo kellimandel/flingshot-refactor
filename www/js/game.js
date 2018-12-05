@@ -1,15 +1,20 @@
 var game;
 
+import bootState from './boot.js';
+import loadState from './load.js';
+
+//...
+
 var screenwidth=1280;
 var screenheight=720;
 
-var app = {
+window.app = {
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
         window.addEventListener('orientationchange', function() {
            console.log(screen.orientation.lock('landscape'));
         });
-    },
+        return game;},
 
     onDeviceReady: function() {
         // NEW GAME OBJECT
@@ -20,11 +25,12 @@ var app = {
         game.state.add('load', loadState);
         game.state.add('menu', menuState);
         game.state.add('instructions', instructionsState);
-        game.state.add('play', playState);
+        game.state.add('play', window.playState);
         game.state.add('win', winState);
         game.state.add('lose', loseState);
 
         game.state.start('boot');
+
 
     },
 };

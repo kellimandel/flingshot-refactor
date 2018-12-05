@@ -1,4 +1,11 @@
-//import HealthBar from 'phaser-percent-bar';
+// import HealthBar from 'phaser-percent-bar';
+
+// window.onload = config;
+import Ball from './ball.js';
+
+// const Ball = require('./ball.js');
+
+
 
 var timerColor = "#00ff00";
 var scoreColor = "rgba(255,255,255,0.7)";
@@ -15,11 +22,82 @@ var spriteTime;
 var finalWarningOn = true;
 var playMusic = true;
 
+let gamePaused;
+let slingshotX;
+let slingshotY;
+let slingshotHeight;
+let tailWidth;
+let ballinitx;
+let ballinity;
+let ballsInMotion;
+let buttonXPos;
+let buttonYPos;
+let WALL_Z;
+let WALL_FLOOR;
+let currentLevel;
+let score;
+let levelGoalIncrement;
+let levelGoal;
+let levelsGoals;
+let wrongHitPoints;
+let rightHitPoints;
+let bground;
+let studentCollisionGroup;
+let ballCollisionGroup;
+let teacherCollisionGroup;
+let inactiveCollisionGroup;
+let teacher;
+let backgroundMusic;
+let classroom;
+let collisionSound;
+let ticTok;
+let pain1male;
+let pain2male;
+let pain3fem;
+let pain4fem;
+let pain5male;
+let schoolbell;
+let timerLevelDisplay;
+let scoreDisplay;
+let levelFont;
+let emitter;
+let studentXs;
+let studentYs;
+let arrayStudents;
+let slingshot;
+let analog;
+let arrow;
+let pauseButton;
+let levelupPopup;
+let playButton;
+let tail;
+let restartButton;
+let group;
+let scoreBarOutline;
+let timerBarOutline;
+let ballInSlingshot;
+let timer; //timer for levels
+let timerConstant; //each level is 30 seconds long
+let timerEvent; //a timer for each level
+let timeToChangeTarget;
+let ballsTimer; //timer to create depth effects
+let timerLevel; //timer for levels
+let timerLevelConstant; //each break between levels is 3 seconds long
+let timerLevelEvent; //a timer for each level
+let randomIndex;
+let randomStudent;
+let ballCollided;
+let studentNumber;
+let studentnum;
+let balballInSlingshot;
+let studNum;
 
-var playState = {
+
+window.playState = {
 
 
     create : function(){
+
         gamePaused = false;
 
         slingshotX = 450;
@@ -85,7 +163,7 @@ var playState = {
         backgroundMusic = game.add.audio('background');
         classroom = game.add.audio('classroom');
         collisionSound = game.add.audio('collisionSound');
-        ticTok = game.add.audio('tic')
+        ticTok = game.add.audio('tic');
         pain1male = game.add.audio('pain1male');
         pain2male = game.add.audio('pain2male');
         pain3fem = game.add.audio('pain3fem');
@@ -95,8 +173,8 @@ var playState = {
 
         //This loads in fonts to be used later
         this.game.load.bitmapFont('myfont', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
-        this.game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt')
-        this.game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt')
+        this.game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt');
+        this.game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt');
 
 
 
@@ -106,7 +184,7 @@ var playState = {
         //Displays score with the myfont font
         scoreDisplay = game.add.bitmapText(650,16,'myfont','0',50);
         //Displays the level in the LF font
-        levelFont = game.add.bitmapText(995,20,'LF','Level:',50)
+        levelFont = game.add.bitmapText(995,20,'LF','Level:',50);
 
 
 
@@ -148,7 +226,7 @@ var playState = {
 
         tail = game.add.sprite(300, 300, 'tail');
         tail.width = tailWidth;
-        tail.anchor.setTo(0.5,1)
+        tail.anchor.setTo(0.5,1);
         tail.rotation = 3.14/2;
         tail.alpha = 0;
 
@@ -210,7 +288,7 @@ var playState = {
 
 
         //Score Bar Outline
-        scoreBarOutline.beginFill(0x000000,.3)
+        scoreBarOutline.beginFill(0x000000,.3);
         scoreBarOutline.drawRect(300, 646, 700, 25);
         scoreBarOutline.endFill();
         group.add(scoreBarOutline);
@@ -235,7 +313,8 @@ var playState = {
         }
         randomStudent.alpha = 1;
 
-        ballInSlingshot = this.createBall();
+
+        ballInSlingshot = new Ball(game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
         //Timer Instance
         timer = game.time.create(); //timer for levels
         timerConstant = 30; //each level is 30 seconds long
@@ -250,7 +329,7 @@ var playState = {
 
 
         this.initiateTimer();
-        this.initiateTimerLevel()
+        this.initiateTimerLevel();
 
         playState.play();
 
@@ -288,27 +367,10 @@ var playState = {
     destroyTimerLevel: function(){
         timerLevel.stop();
         timerLevel.destroy();
-        playState.initiateTimerLevel()
+        playState.initiateTimerLevel();
     },
 
-    createBall : function() {
-        var newBall = game.add.sprite(ballinitx, ballinity, 'ball');
-        game.physics.p2.enable(newBall);
-        newBall.scale.setTo(0.15,0.15);
-        newBall.anchor.setTo(0.5, 0.5);
-        newBall.body.setCircle(30); //for collision
-        newBall.body.static = true;
-        newBall.body.setCollisionGroup(ballCollisionGroup);
-        newBall.body.collides(teacherCollisionGroup);
-        newBall.body.collides(studentCollisionGroup);
-        newBall.body.z =0;
-        newBall.body.velocity.z = 0;
-        newBall.hitFloor = false;
-        newBall.floor = -1000;
-        newBall.timesHitFloor =0;
-        return newBall;
-    },
-    updateLevelUp: function(){
+updateLevelUp: function(){
         levelFont.text = "Level: "+currentLevel;
 
     },
@@ -324,7 +386,7 @@ var playState = {
 
     },
     updateScoreBar : function(){ //updates width of the ScoreBarRectangle so that it reflects progress through the level
-        spriteScore.width = score*8.75
+        spriteScore.width = score*8.75;
         if (score<0){
             spriteScore.width =0}
         if (score == 80){
@@ -361,16 +423,16 @@ var playState = {
 
     },
     updateTimerBar : function(){ //Changes the width of the timerBarRectangle to match the timer
-        spriteTime.width = (timer.ms/30000)*700
+        spriteTime.width = (timer.ms/30000)*700;
         var endTime = 10;
-        var timerOver = 29.9
+        var timerOver = 29.9;
         if(timer.ms/1000 > timerConstant - endTime && timer.ms/1000 < (timerConstant - endTime + .01)   && finalWarningOn ){
             finalWarningOn == false;
             ticTok.play();
         }
     },
     updateMusic : function(){
-        var startMusic = 0.1
+        var startMusic = 0.1;
         if(currentLevel == 1 && timer.ms/1000 < startMusic){
             backgroundMusic.loopFull();
             classroom.loopFull();
@@ -396,7 +458,7 @@ var playState = {
 
     holdBall : function() {
         playState.showArrow();
-        ballInSlingshot.body.static = true;
+        ballInSlingshot.setBodyStatic(true);
     },
 
     showArrow: function() {
@@ -428,52 +490,52 @@ var playState = {
         var arrowLengthX = arrow.x - origin.x;
         var arrowLengthY = arrow.y - origin.y;
         if(Math.abs(arrowLengthY) > 3){
-            ballInSlingshot.body.static = false;
+            ballInSlingshot.setBodyStatic(false);
             var Xvector = (arrow.x - origin.x) *13;
             var Yvector = (arrow.y - origin.y) *13;
-            ballInSlingshot.body.velocity.x = Xvector;
-            ballInSlingshot.body.velocity.y = Yvector;
-            ballInSlingshot.body.velocity.z = - arrowLengthY / 10;
-            ballsInMotion.push(ballInSlingshot);
-            ballInSlingshot = playState.createBall();
+            ballInSlingshot.setXVelocity(Xvector);
+            ballInSlingshot.setYVelocity(Yvector);
+            ballInSlingshot.setZVelocity( - arrowLengthY / 10);
+            ballsInMotion.push(ballInSlingshot.sprite);
+            ballInSlingshot = new Ball(game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
         }
         playState.hideArrow();
     },
 
     updateBalls : function () {
         for (i=0; i< ballsInMotion.length ; i++){
-            if (ballsInMotion[i].timesHitFloor > 4){
+            if (ballsInMotion[i].getTimesHitFloor() > 4){
                 ballsInMotion[i].kill();
                 ballsInMotion.splice(i, 1);
             } else{
-                playState.updateBallSize(ballsInMotion[i]);
+                playState.updateBallSize(ballsInMotion[i].sprite);
             }
         }
     },
 
     updateBallSize : function(ball){
         if(!ball.hitFloor){
-            if (ball.body.z >= WALL_Z){ //ball hits back wall
-                ball.body.velocity.x = 0;
-                ball.floor = WALL_FLOOR;
-            }else{ //update ball size based on z-position
-                ball.body.z += ball.body.velocity.z;
-                var size = 0.15/(1 + ball.body.z*0.003);
-                ball.scale.setTo(size,size);
-                ball.floor = (screenheight + 300) / (1 + ball.body.z * 0.01);
+            if (ball.getZ() >= WALL_Z){ //sprite hits back wall
+                ball.setXVelocity(0);
+                ball.setFloor(WALL_FLOOR);
+            }else{ //update sprite size based on z-position
+                ball.moveZ();
+                var size = 0.15/(1 + ball.getZ()*0.003);
+                ball.setScale(size,size);
+                ball.setFloor((screenheight + 300) / (1 + ball.getZ() * 0.01));
             }
         }
-        if(ball.body.y >= ball.floor){
-            playState.bounceOffFloor(ball);
+        if(ball.getY() >= ball.getFloor()){
+            playState.bounceOffFloor(ball.getSprite());
         }
     },
 
     bounceOffFloor : function (ball) {
-        ball.body.velocity.y = -ball.body.velocity.y/2.5;
-        ball.body.velocity.x = ball.body.velocity.x/1.5;
-        ball.floor = ball.body.y;
-        ball.timesHitFloor++;
-        ball.hitFloor = true;
+        ball.setYVelocity(-ball.getYVelocity()/2.5);
+        ball.setXVelocity(ball.getXVelocity()/1.5);
+        ball.setFloor(ball.getY());
+        ball.incrTimesHitFloor();
+        ball.setHitFloor(true);
     },
 
     ballHit : function(student, ball) {
@@ -489,7 +551,7 @@ var playState = {
             playState.showScoreTween("lose", ball.x, ball.y);
             score -= wrongHitPoints;
         }
-        ball.sprite.body.setCollisionGroup(inactiveCollisionGroup); //
+        ball.setCollisionGroup(inactiveCollisionGroup); //
     },
 
 //Points flashing after a hit
@@ -639,7 +701,7 @@ var playState = {
             ballsInMotion[i].destroy();
         }
         ballsInMotion = [];
-        balballInSlingshot = playState.createBall();
+        balballInSlingshot =  new Ball(game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
 
         //reset students graphics
         for(var i = 0; i<3; i++)
@@ -699,7 +761,7 @@ var playState = {
     },
 
     teacherHit: function(ball){
-        game.physics.arcade.collide(ball, teacher, this.screenshake(), null, this);
+        game.physics.arcade.collide(ball.getSprite(), teacher, this.screenshake(), null, this);
 
     },
 
@@ -815,3 +877,5 @@ var playState = {
 
 
 }
+
+// export default playState;

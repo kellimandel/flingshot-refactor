@@ -14,7 +14,7 @@ var loadState = {
 
 
         game.load.image('background','assets/images/Background1.png');
-        game.load.image('ball', 'assets/images/paperBall.png');
+        game.load.image('sprite', 'assets/images/paperBall.png');
         game.load.image('slingshot', 'assets/images/CatapultSprite.png')
         game.load.image('student1', 'assets/images/student1.png');
         game.load.image('student1-hit', 'assets/images/student1-hit.png');
