@@ -1,7 +1,7 @@
-var menuState = {
+let menuState = {
   create : function() {
 
-    var playRect = this.add.graphics(0, 0);
+    let playRect = this.add.graphics(0, 0);
     // draw a rectangle
     playRect.lineStyle(2, 0x0000FF, 0.5);
     playRect.beginFill(0xFF8080, 1);
@@ -11,10 +11,10 @@ var menuState = {
     playRect.events.onInputDown.add(this.displayStartInstructions,this);
     playRect.alpha =0;
 
-    var menu = game.add.sprite(0,0,'Menu');
+    let menu = game.add.sprite(0,0,'Menu');
     menu.alpha = 1;
 
-    var menuButton = game.add.sprite(500,50,'MenuButton');
+    let menuButton = game.add.sprite(500,50,'MenuButton');
     menuButton.alpha = 1;
     menuButton.scale.setTo(0.1,0.1);
     menuButton.inputEnabled  = true;

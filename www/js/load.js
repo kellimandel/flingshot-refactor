@@ -1,4 +1,4 @@
-var loadState = {
+let loadState = {
     preload : function(){
         game.load.image('Menu','assets/images/MainMenu.png');
         game.load.image('StartInstructions','assets/images/instructionBackground.png');

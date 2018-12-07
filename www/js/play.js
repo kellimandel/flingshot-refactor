@@ -738,10 +738,6 @@ updateLevelUp: function(){
 
     },
 
-    // add : function(a,b){
-    //     return (a+b);
-    // },
-
 
     updateTargetStudent: function() {
         if (!gamePaused && window.game.time.now >= timeToChangeTarget){
@@ -762,10 +758,6 @@ updateLevelUp: function(){
 //        var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
         let deltaTime = 4000 - 3600*(factor*1.45)/10; //shorten interval with higher level. level 10 at 0.8s
         timeToChangeTarget = window.game.time.now + deltaTime;
-
-
-
-
 
     },
 

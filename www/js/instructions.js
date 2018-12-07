@@ -1,12 +1,12 @@
 let instructionDisplay;
 
-var instructionsState = {
+let instructionsState = {
     create : function(){
-        var string = 'Touch anywhere to hit the students!';
-        var startInstructions = game.add.sprite(0,0,'StartInstructions');
-        var instruct = game.add.sprite(600,170,'instruction');
+        let string = 'Touch anywhere to hit the students!';
+        let startInstructions = game.add.sprite(0,0,'StartInstructions');
+        let instruct = game.add.sprite(600,170,'instruction');
         instruct.alpha = 1;
-        var walk = instruct.animations.add('walk');
+        // let walk = instruct.animations.add('walk');
         instruct.animations.play('walk', 7, true);
 
         startInstructions.scale.setTo(1,1);

@@ -1,4 +1,4 @@
-var bootState = {
+let bootState = {
   create : function() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.startSystem(Phaser.Physics.ARCADE); //emmitter system
