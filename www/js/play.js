@@ -2,6 +2,7 @@
 
 // window.onload = config;
 import Ball from './ball.js';
+import Arrow from './arrow.js';
 
 
 var timerColor = "#00ff00";
@@ -29,8 +30,6 @@ let ballinity;
 let ballsInMotion;
 let buttonXPos;
 let buttonYPos;
-let WALL_Z;
-let WALL_FLOOR;
 let currentLevel;
 let score;
 let levelGoalIncrement;
@@ -106,8 +105,6 @@ var playState = {
         ballsInMotion = [];
         buttonXPos = 1100;
         buttonYPos = 115;
-        WALL_Z = 300;
-        WALL_FLOOR = 260;
 //    Scoring for game and levels
         currentLevel = 1;
         score = 0;
@@ -505,34 +502,9 @@ updateLevelUp: function(){
                 ballsInMotion[i].kill();
                 ballsInMotion.splice(i, 1);
             } else{
-                playState.updateBallSize(ballsInMotion[i]);
+                ballsInMotion[i].updateSize();
             }
         }
-    },
-
-    updateBallSize : function(ball){
-        if(!ball.hitFloor){
-            if (ball.getZ() >= WALL_Z){ //sprite hits back wall
-                ball.setXVelocity(0);
-                ball.setFloor(WALL_FLOOR);
-            }else{ //update sprite size based on z-position
-                ball.moveZ();
-                var size = 0.15/(1 + ball.getZ()*0.003);
-                ball.setScale(size,size);
-                ball.setFloor((window.screenheight + 300) / (1 + ball.getZ() * 0.01));
-            }
-        }
-        if(ball.getY() >= ball.getFloor()){
-            playState.bounceOffFloor(ball);
-        }
-    },
-
-    bounceOffFloor : function (ball) {
-        ball.setYVelocity(-ball.getYVelocity()/2.5);
-        ball.setXVelocity(ball.getXVelocity()/1.5);
-        ball.setFloor(ball.getY());
-        ball.incrTimesHitFloor();
-        ball.setHitFloor(true);
     },
 
     ballHit : function(student, ball) {
