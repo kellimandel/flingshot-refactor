@@ -1,5 +1,5 @@
-let WALL_Z = 300;
-let WALL_FLOOR = 260;
+const WALL_Z = 300;
+const WALL_FLOOR = 260;
 
 class Ball{
 
