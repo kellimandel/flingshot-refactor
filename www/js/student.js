@@ -1,24 +1,19 @@
 const studentXs = [320,610,915,175,1095];
 const studentYs = [280,280,280,525,525];
 
+
 class Student{
-    constructor(studentNum){
+
+    constructor(studentNum, audios, collGroup){
         this.studentNum = studentNum;
-        this.audio = this.setUpAudio()[studentNum];
+        this.audio = audios[studentNum];
         this.addStudent('student'+(studentNum+1), studentXs[studentNum], studentYs[studentNum]);
         this._sprite.body.clearShapes();
         this._sprite.body.loadPolygon('physicsData'+(studentNum+1), 'student'+(studentNum+1)+'-active');
+        this._sprite.body.setCollisionGroup(collGroup);
 
     }
 
-    setUpAudio(){
-        let pain1male = window.game.add.audio('pain1male');
-        let pain2male = window.game.add.audio('pain2male');
-        let pain3fem = window.game.add.audio('pain3fem');
-        let pain4fem = window.game.add.audio('pain4fem');
-        let pain5male = window.game.add.audio('pain5male');
-        return [pain1male, pain2male, pain3fem, pain4fem, pain5male];
-    }
 
     addStudent(image, x, y){
         this._sprite = window.game.add.sprite(x,y, image);
@@ -31,8 +26,8 @@ class Student{
         this._sprite.body.setCollisionGroup(collGroup);
     }
 
-    collides(collGroup, ballHit, playState){
-        this._sprite.body.collides(collGroup,ballHit,playState);
+    collides(collGroup, ballHit, state){
+        this._sprite.body.collides(collGroup,ballHit,state);
 
     }
 
@@ -53,7 +48,7 @@ class Student{
     }
 
     resetTexture(){
-        this._sprite.loadTexture('student'+(this.studentNum+1),0);
+        return this._sprite.loadTexture('student'+(this.studentNum+1),0);
     }
 
 }

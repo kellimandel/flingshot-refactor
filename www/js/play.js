@@ -2,6 +2,8 @@
 
 import Ball from './ball.js';
 import Arrow from './arrow.js';
+import Student from './student.js';
+
 
 
 
@@ -39,11 +41,6 @@ let backgroundMusic;
 let classroom;
 let collisionSound;
 let ticTok;
-let pain1male;
-let pain2male;
-let pain3fem;
-let pain4fem;
-let pain5male;
 let schoolbell;
 let timerLevelDisplay;
 let scoreDisplay;
@@ -151,11 +148,12 @@ let playState = {
         classroom = window.game.add.audio('classroom');
         collisionSound = window.game.add.audio('collisionSound');
         ticTok = window.game.add.audio('tic');
-        pain1male = window.game.add.audio('pain1male');
-        pain2male = window.game.add.audio('pain2male');
-        pain3fem = window.game.add.audio('pain3fem');
-        pain4fem = window.game.add.audio('pain4fem');
-        pain5male = window.game.add.audio('pain5male');
+        const pain1male = window.game.add.audio('pain1male');
+        const pain2male = window.game.add.audio('pain2male');
+        const pain3fem = window.game.add.audio('pain3fem');
+        const pain4fem = window.game.add.audio('pain4fem');
+        const pain5male = window.game.add.audio('pain5male');
+        const audios = [pain1male, pain2male, pain3fem, pain4fem, pain5male];
         schoolbell = window.game.add.audio('schoolbell');
 
         //This loads in fonts to be used later
@@ -193,12 +191,9 @@ let playState = {
         arrayStudents = [];
 
         for (let i=0; i<5; i++){
-            let student = this.addStudent('student'+(i+1), studentXs[i], studentYs[i]);
+            let student = new Student(i, audios, studentCollisionGroup);
             arrayStudents.push(student);
-            student.body.clearShapes();
-            student.body.loadPolygon('physicsData'+(i+1), 'student'+(i+1)+'-active');
-            student.body.setCollisionGroup(studentCollisionGroup);
-            student.body.collides(ballCollisionGroup,this.ballHit,this);
+            student.collides(ballCollisionGroup,this.ballHit,this);
         }
 
         slingshot = window.game.add.sprite(slingshotX,slingshotY,'slingshot');
@@ -273,12 +268,12 @@ let playState = {
         randomIndex = Math.floor(Math.random() * 5);
         randomStudent = arrayStudents[randomIndex];
         let studentNumber = randomIndex+1;
-        randomStudent.loadTexture('student'+studentNumber+'-active', 0);
+        randomStudent.resetTexture();
         for( let i=0; i< arrayStudents.length; i++)
         {
-            arrayStudents[i].alpha = 0.25;
+            arrayStudents[i].setAlpha(0.25);
         }
-        randomStudent.alpha = 1;
+        randomStudent.setAlpha(1);
 
 
         ballInSlingshot = new Ball(window.game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
@@ -460,10 +455,10 @@ updateLevelUp: function(){
 
     ballHit : function(student, ball) {
         ballCollided = true;
-        if (student.x === randomStudent.x && student.y === randomStudent.y){
+        if (student.x === randomStudent.getX() && student.y === randomStudent.getY()){
             playState.studentHit(ball.x, ball.y);
             studentnum = randomIndex+1;
-            window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
+            window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.resetTexture(), this);
             playState.chooseStudent();
             score += rightHitPoints;
         }
@@ -550,7 +545,7 @@ updateLevelUp: function(){
         // teacher.animations.paused = true;
         bground.inputEnabled = false;
         gamePaused = true;
-        randomStudent.alpha = 0.25
+        randomStudent.setAlpha(0.25);
     },
 
     play :  function(){
@@ -630,9 +625,9 @@ updateLevelUp: function(){
         for(let i = 0; i<3; i++)
         {
             studNum = i+1;
-            arrayStudents[i].loadTexture('student'+studNum,0);
+            arrayStudents[i].resetTexture();
         }
-        randomStudent.alpha = 1;
+        randomStudent.setAlpha(1);
 
         window.game.physics.p2.resume();
         window.game.input.enabled = true;
@@ -644,9 +639,9 @@ updateLevelUp: function(){
 
 
     chooseStudent : function (){
-        randomStudent.alpha = 0.25;
+        randomStudent.setAlpha(0.25);
         studentnum = randomIndex+1;
-        window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.loadTexture('student'+studentnum, 0), this);
+        window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.resetTexture(), this);
         let num = Math.floor((Math.random() * 5));
         while(num===randomIndex)
         {
@@ -655,30 +650,16 @@ updateLevelUp: function(){
         randomIndex=num;
         randomStudent = arrayStudents[randomIndex];
         studentNumber = randomIndex+1;
-        randomStudent.loadTexture('student'+studentNumber+'-active', 0);
-        randomStudent.alpha = 1;
+        randomStudent.resetTexture();
+        randomStudent.setAlpha(1);
         playState.updateTimeToChangeTarget();
     },
 
     studentHit: function (ballX, ballY){
-        studentnum = randomIndex+1;
-        if (studentnum===1){
-            pain1male.play();
-        }
-        else if (studentnum===2){
-            pain2male.play();
-        }
-        else if(studentnum===3){
-            pain3fem.play();
-        }
-        else if(studentnum===4){
-            pain4fem.play();
-        }
-        else if(studentnum===5){
-            pain5male.play();
-        }
+        arrayStudents[randomIndex].playSound();
+
         //collisionSound.play();
-        randomStudent.alpha = 0.25;
+        randomStudent.setAlpha(0.25);
         playState.spitBurst(ballX,ballY);
         playState.showScoreTween("add", ballX, ballY);
     },
