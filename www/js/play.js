@@ -4,12 +4,7 @@ import Ball from './ball.js';
 import Arrow from './arrow.js';
 
 
-let timerColor = "#00ff00";
-let scoreColor = "rgba(255,255,255,0.7)";
-let levelColor = "#68D81D";
-let scoreFont = "Georgia, cursive";
-let scoreBarColor = "be011f";
-let scoreBarOutlineColor = 0xFFFFFF;
+
 let timerBarColor = '#00cc00';
 let scoreBar;
 let scoreBarRectangle;
@@ -118,10 +113,12 @@ let playState = {
         //Collisions Groups
         studentCollisionGroup = window.game.physics.p2.createCollisionGroup();
         ballCollisionGroup = window.game.physics.p2.createCollisionGroup();
+        ///////////////////////////////////////////////////////////////////////////////////////////////
         teacherCollisionGroup = window.game.physics.p2.createCollisionGroup();
+        ////////////////////////////////////////////////////////////////////////////////////
         inactiveCollisionGroup = window.game.physics.p2.createCollisionGroup();
 
-
+/////////////////////////////////////////////////////////////////////////////////////
         teacher =  window.game.add.sprite(465, 112, 'teacher');
         window.game.physics.p2.enable(teacher);
         teacher.body.clearShapes();
@@ -133,6 +130,7 @@ let playState = {
         teacher.animations.play('walk', 3, true);
         teacher.body.setCollisionGroup(teacherCollisionGroup);
         teacher.body.collides(ballCollisionGroup,this.teacherHit,this);
+        ////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -518,6 +516,7 @@ updateLevelUp: function(){
         window.game.physics.p2.pause();
         window.game.time.events.pause([ballsTimer]);
         timer.pause();
+        //////////////////////////////////////////////////////////////////
         teacher.animations.paused = true;
         bground.inputEnabled = false;
         gamePaused = true;
