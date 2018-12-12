@@ -51,6 +51,10 @@ class Student{
         return this._sprite.loadTexture('student'+(this.studentNum+1),0);
     }
 
+    raiseHand(){
+        return this._sprite.loadTexture('student'+(this.studentNum+1)+"-active",0);
+    }
+
 }
 
 export default Student;

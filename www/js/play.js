@@ -6,31 +6,24 @@ import Student from './student.js';
 
 
 
+const TIMER_LEVEL = 3; //each break between levels is 3 seconds long
+const TIMER_BAR_COLOR = '#00cc00';
+const TIMER_TIME = 30; //each level is 30 seconds long
+const WRONG_HIT_POINTS = 5;
+const RIGHT_HIT_POINTS = 10;
 
-let timerBarColor = '#00cc00';
-let scoreBar;
-let scoreBarRectangle;
 let spriteScore;
-let timerBarRectangle;
 let spriteTime;
 let finalWarningOn = true;
-let playMusic = true;
 let gamePaused;
-let slingshotX;
-let slingshotY;
 let slingshotHeight;
 let ballinitx;
 let ballinity;
 let ballsInMotion;
-let buttonXPos;
-let buttonYPos;
 let currentLevel;
 let score;
-let levelGoalIncrement;
 let levelGoal;
 let levelsGoals;
-let wrongHitPoints;
-let rightHitPoints;
 let bground;
 let studentCollisionGroup;
 let ballCollisionGroup;
@@ -39,41 +32,28 @@ let inactiveCollisionGroup;
 let teacher;
 let backgroundMusic;
 let classroom;
-let collisionSound;
 let ticTok;
-let schoolbell;
 let timerLevelDisplay;
 let scoreDisplay;
 let levelFont;
 let emitter;
-let studentXs;
-let studentYs;
 let arrayStudents;
-let slingshot;
 let arrow;
 let pauseButton;
 let levelupPopup;
 let playButton;
 let restartButton;
-let group;
 let scoreBarOutline;
 let timerBarOutline;
 let ballInSlingshot;
 let timer; //timer for levels
-let timerConstant; //each level is 30 seconds long
 let timerEvent; //a timer for each level
 let timeToChangeTarget;
 let ballsTimer; //timer to create depth effects
 let timerLevel; //timer for levels
-let timerLevelConstant; //each break between levels is 3 seconds long
 let timerLevelEvent; //a timer for each level
 let randomIndex;
 let randomStudent;
-let ballCollided;
-let studentNumber;
-let studentnum;
-let balballInSlingshot;
-let studNum;
 
 
 let playState = {
@@ -83,25 +63,21 @@ let playState = {
 
         gamePaused = false;
 
-        slingshotX = 450;
-        slingshotY = 400;
+        const slingshotX = 450;
+        const slingshotY = 400;
         slingshotHeight = 340;
         ballinitx=slingshotX+100;
         ballinity=slingshotY+65;
         ballsInMotion = [];
-        buttonXPos = 1100;
-        buttonYPos = 115;
+        const buttonXPos = 1100;
+        const buttonYPos = 115;
 //    Scoring for game and levels
         currentLevel = 1;
         score = 0;
-        levelGoalIncrement=[80,130,160,180,200,230,230,500];
-        levelsGoals = [80,210,370,550,750,980,1210,1710];
-        levelGoal = 80;
-        // levelGoalIncrement=[10,130,160,180,200,230,230,260]; //for testing
+        levelsGoals = [0, 80,210,370,550,750,980,1210,1710];
+        levelGoal = levelsGoals[currentLevel];
         // levelsGoals = [10,20,40,80,750,980,1210,1470];  //for testing
         // levelGoal = 10; //for testing
-        wrongHitPoints = 5;
-        rightHitPoints = 10;
 
         bground = window.game.add.sprite(0,0,'background');
         bground.alpha = 1.0;
@@ -115,7 +91,7 @@ let playState = {
         ////////////////////////////////////////////////////////////////////////////////////
         inactiveCollisionGroup = window.game.physics.p2.createCollisionGroup();
 
-/////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////
         teacher =  window.game.add.sprite(465, 112, 'teacher');
         window.game.physics.p2.enable(teacher);
         teacher.body.clearShapes();
@@ -130,10 +106,6 @@ let playState = {
         ////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
         // moves from world stage to group as a child
         // create an instance of graphics, then add it to a group
 
@@ -146,7 +118,6 @@ let playState = {
         //adding sound effects to be used else where
         backgroundMusic = window.game.add.audio('background');
         classroom = window.game.add.audio('classroom');
-        collisionSound = window.game.add.audio('collisionSound');
         ticTok = window.game.add.audio('tic');
         const pain1male = window.game.add.audio('pain1male');
         const pain2male = window.game.add.audio('pain2male');
@@ -154,14 +125,12 @@ let playState = {
         const pain4fem = window.game.add.audio('pain4fem');
         const pain5male = window.game.add.audio('pain5male');
         const audios = [pain1male, pain2male, pain3fem, pain4fem, pain5male];
-        schoolbell = window.game.add.audio('schoolbell');
+        window.schoolbell = window.game.add.audio('schoolbell');
 
         //This loads in fonts to be used later
         this.game.load.bitmapFont('myfont', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
         this.game.load.bitmapFont('LF','assets/fonts/level.png','assets/fonts/level.fnt');
         this.game.load.bitmapFont('WHF','assets/fonts/wrong.png','assets/fonts/wrong.fnt');
-
-
 
 
         timerLevelDisplay = window.game.add.text(500,450,'',{fill: '#ffffff' , fontSize: 50, stroke: '#ffffff', strokeThickness: 2});
@@ -170,7 +139,6 @@ let playState = {
         scoreDisplay = window.game.add.bitmapText(650,16,'myfont','0',50);
         //Displays the level in the LF font
         levelFont = window.game.add.bitmapText(995,20,'LF','Level:',50);
-
 
 
         //adds spit particles to collisions with students
@@ -186,8 +154,7 @@ let playState = {
 
 
         //Students locations on the canvas
-        studentXs = [320,610,915,175,1095];
-        studentYs = [280,280,280,525,525];
+
         arrayStudents = [];
 
         for (let i=0; i<5; i++){
@@ -196,7 +163,7 @@ let playState = {
             student.collides(ballCollisionGroup,this.ballHit,this);
         }
 
-        slingshot = window.game.add.sprite(slingshotX,slingshotY,'slingshot');
+        let slingshot = window.game.add.sprite(slingshotX,slingshotY,'slingshot');
         slingshot.height = slingshotHeight;
 
         //the control arrow
@@ -210,8 +177,6 @@ let playState = {
         levelupPopup.anchor.set(0.5,0.5);
         levelupPopup.inputEnabled = true;
         levelupPopup.input.enabled=false;
-
-
 
 
         playButton = window.game.add.sprite(game.world.centerX-200,game.world.centerY+40, 'MenuButton');
@@ -230,7 +195,7 @@ let playState = {
         restartButton.events.onInputDown.add(this.restart,this);
 
         //Creates the ScoreBar rectangle for us to later change the width of
-        scoreBarRectangle= window.game.add.bitmapData(700 ,128);
+        let scoreBarRectangle= window.game.add.bitmapData(700 ,128);
         scoreBarRectangle.ctx.beginPath();
         scoreBarRectangle.ctx.rect(0,0,700,25);
         scoreBarRectangle.ctx.fillStyle = '#f10127';
@@ -238,15 +203,13 @@ let playState = {
         //Turns our bitmap rectangle into a sprite
         spriteScore = window.game.add.sprite(300, 646, scoreBarRectangle);
         // Creates outlines to both the scoreBar along with the timerbar
-        group = this.add.group();
+        let group = this.add.group();
         scoreBarOutline = this.game.add.graphics();
         timerBarOutline = this.game.add.graphics();
         timerBarOutline.beginFill(0x000000,.3);
         timerBarOutline.drawRect(300,675, 700,24);
         timerBarOutline.endFill();
         group.add(timerBarOutline);
-
-
 
 
         //Score Bar Outline
@@ -256,10 +219,10 @@ let playState = {
         group.add(scoreBarOutline);
 
         //Creates the rectangle for us to later change the width of
-        timerBarRectangle = window.game.add.bitmapData(700,128);
+        let timerBarRectangle = window.game.add.bitmapData(700,128);
         timerBarRectangle.ctx.beginPath();
         timerBarRectangle.ctx.rect(0,0,700,25);
-        timerBarRectangle.ctx.fillStyle = timerBarColor;
+        timerBarRectangle.ctx.fillStyle = TIMER_BAR_COLOR;
         timerBarRectangle.ctx.fill();
         //Turns our bitmap rectangle into a sprite
         spriteTime = window.game.add.sprite(300,676,timerBarRectangle);
@@ -267,8 +230,8 @@ let playState = {
 
         randomIndex = Math.floor(Math.random() * 5);
         randomStudent = arrayStudents[randomIndex];
-        let studentNumber = randomIndex+1;
-        randomStudent.resetTexture();
+
+        randomStudent.raiseHand();
         for( let i=0; i< arrayStudents.length; i++)
         {
             arrayStudents[i].setAlpha(0.25);
@@ -279,14 +242,12 @@ let playState = {
         ballInSlingshot = new Ball(window.game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
         //Timer Instance
         timer = window.game.time.create(); //timer for levels
-        timerConstant = 30; //each level is 30 seconds long
-        timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, this.checkLevelGoal); //a timer for each level
+        timerEvent = timer.add(Phaser.Timer.SECOND * TIMER_TIME, this.checkLevelGoal); //a timer for each level
         timeToChangeTarget = game.time.now + 4000;
         ballsTimer = window.game.time.events.loop(50, this.updateBalls, this); //timer to create depth effects
 
         timerLevel = window.game.time.create(); //timer for levels
-        timerLevelConstant = 3; //each break between levels is 3 seconds long
-        timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume); //a timer for each level
+        timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * TIMER_LEVEL, this.levelUpResume); //a timer for each level
 
         arrow = new Arrow();
 
@@ -306,7 +267,7 @@ let playState = {
 
     initiateTimer: function(){
         timer = window.game.time.create();
-        timerEvent = timer.add(Phaser.Timer.SECOND * timerConstant, playState.checkLevelGoal);
+        timerEvent = timer.add(Phaser.Timer.SECOND * TIMER_TIME, playState.checkLevelGoal);
         timer.start();
         playState.updateTimeToChangeTarget();
 
@@ -322,7 +283,7 @@ let playState = {
 
     initiateTimerLevel: function(){
         timerLevel = window.game.time.create();
-        timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * timerLevelConstant, this.levelUpResume);
+        timerLevelEvent = timerLevel.add(Phaser.Timer.SECOND * TIMER_LEVEL, this.levelUpResume);
         timerLevel.pause();
         timerLevelDisplay.visible = false;
     },
@@ -339,7 +300,6 @@ updateLevelUp: function(){
     },
     //Gives you additional time for the final level
     updateBonusTime: function(){
-        let secs = 0;
         if(score === 1300){
             timer.pause();
         }
@@ -388,8 +348,7 @@ updateLevelUp: function(){
     updateTimerBar : function(){ //Changes the width of the timerBarRectangle to match the timer
         spriteTime.width = (timer.ms/30000)*700;
         let endTime = 10;
-        let timerOver = 29.9;
-        if(timer.ms/1000 > timerConstant - endTime && timer.ms/1000 < (timerConstant - endTime + .01)   && finalWarningOn ){
+        if(timer.ms/1000 > TIMER_TIME - endTime && timer.ms/1000 < (TIMER_TIME - endTime + .01)   && finalWarningOn ){
             finalWarningOn = false;
             ticTok.play();
         }
@@ -408,15 +367,6 @@ updateLevelUp: function(){
             classroom.resume();
             backgroundMusic.resume();
         }
-    },
-
-
-    addStudent : function(image, x, y){
-        let student = window.game.add.sprite(x,y, image);
-        window.game.physics.p2.enable(student);
-        student.anchor.set(0.5,0.5);
-        student.body.static = true;
-        return(student);
     },
 
     holdBall : function() {
@@ -454,17 +404,15 @@ updateLevelUp: function(){
     },
 
     ballHit : function(student, ball) {
-        ballCollided = true;
         if (student.x === randomStudent.getX() && student.y === randomStudent.getY()){
             playState.studentHit(ball.x, ball.y);
-            studentnum = randomIndex+1;
             window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.resetTexture(), this);
             playState.chooseStudent();
-            score += rightHitPoints;
+            score += RIGHT_HIT_POINTS;
         }
         else{
             playState.showScoreTween("lose", ball.x, ball.y);
-            score -= wrongHitPoints;
+            score -= WRONG_HIT_POINTS;
         }
         ball.setCollisionGroup(inactiveCollisionGroup); //
     },
@@ -472,15 +420,11 @@ updateLevelUp: function(){
 //Points flashing after a hit
     showScoreTween : function (action, x, y){
         let text;
-        let deltaScore;
         if (action === "add"){
-//      var text = game.add.text(x,y,'+'+ rightHitPoints,{fill: '#00ff00', fontWeight: 'bold' , fontSize: 60});
-            text = window.game.add.bitmapText(x,y,'LF','+' + rightHitPoints,60);
-            deltaScore = rightHitPoints;
+            text = window.game.add.bitmapText(x,y,'LF','+' + RIGHT_HIT_POINTS,60);
         } else{
 //      var text = game.add.text(x,y,'-'+ wrongHitPoints,{fill: '#ff0000', fontWeight: 'bold' , fontSize: 60});
-            text = window.game.add.bitmapText(x,y,'WHF','-'+ wrongHitPoints,60);
-            deltaScore= -wrongHitPoints;
+            text = window.game.add.bitmapText(x,y,'WHF','-'+ WRONG_HIT_POINTS,60);
         }
         //source: html5gamedevs.com
         window.game.time.events.add(
@@ -539,10 +483,7 @@ updateLevelUp: function(){
     changeState: function(){
         window.game.input.enabled = false; //Allows us to pause physics and keep the running feel going
         playState.displayInvisible();
-        // game.physics.p2.pause();
-        // game.time.events.pause([ballsTimer]);
         timer.pause();
-        // teacher.animations.paused = true;
         bground.inputEnabled = false;
         gamePaused = true;
         randomStudent.setAlpha(0.25);
@@ -567,9 +508,7 @@ updateLevelUp: function(){
 
 
 
-
-
-    checkLevelGoal : function(level){
+    checkLevelGoal : function(){
         if (score<levelGoal)
         {
             ticTok.pause();
@@ -619,12 +558,11 @@ updateLevelUp: function(){
             ballsInMotion[i].destroy();
         }
         ballsInMotion = [];
-        balballInSlingshot =  new Ball(window.game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
+        ballInSlingshot =  new Ball(window.game, ballinitx, ballinity, ballCollisionGroup, teacherCollisionGroup, studentCollisionGroup);
 
         //reset students graphics
         for(let i = 0; i<3; i++)
         {
-            studNum = i+1;
             arrayStudents[i].resetTexture();
         }
         randomStudent.setAlpha(1);
@@ -640,7 +578,6 @@ updateLevelUp: function(){
 
     chooseStudent : function (){
         randomStudent.setAlpha(0.25);
-        studentnum = randomIndex+1;
         window.game.time.events.add(Phaser.Timer.SECOND * 10000, randomStudent.resetTexture(), this);
         let num = Math.floor((Math.random() * 5));
         while(num===randomIndex)
@@ -649,8 +586,7 @@ updateLevelUp: function(){
         }
         randomIndex=num;
         randomStudent = arrayStudents[randomIndex];
-        studentNumber = randomIndex+1;
-        randomStudent.resetTexture();
+        randomStudent.raiseHand();
         randomStudent.setAlpha(1);
         playState.updateTimeToChangeTarget();
     },
@@ -658,7 +594,6 @@ updateLevelUp: function(){
     studentHit: function (ballX, ballY){
         arrayStudents[randomIndex].playSound();
 
-        //collisionSound.play();
         randomStudent.setAlpha(0.25);
         playState.spitBurst(ballX,ballY);
         playState.showScoreTween("add", ballX, ballY);
@@ -696,26 +631,12 @@ updateLevelUp: function(){
         this.updateTimerBar();
 
 
-        this.updateLevelProgressBar();
-
         if (score>=levelGoal){
             this.checkLevelGoal();
         }
 
         this.updateTargetStudent();
         this.updateLevelUp();
-    },
-
-    updateLevelProgressBar: function() {
-        let levelScore;
-        let goal = levelGoalIncrement[currentLevel-1] ;
-        if (currentLevel === 1){
-            levelScore = score;
-        }else{
-            levelScore = score - levelsGoals[currentLevel-2];
-        }
-
-
     },
 
 
@@ -735,7 +656,6 @@ updateLevelUp: function(){
         {
         factor = 7;
         }
-//        var changeFactor = Array( factor+3, factor+2, factor+3, factor+1, factor+1, factor, factor,factor,factor,factor)[Math.floor(Math.random()*10)];
         let deltaTime = 4000 - 3600*(factor*1.45)/10; //shorten interval with higher level. level 10 at 0.8s
         timeToChangeTarget = window.game.time.now + deltaTime;
 
@@ -745,9 +665,8 @@ updateLevelUp: function(){
         return score;
     },
     restart : function() {
-        window.game.state.start('play');
+        game.state.start('play');
     }
-    // Trying to put in a progress bar
 
 };
 
