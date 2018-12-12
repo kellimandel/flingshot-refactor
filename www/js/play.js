@@ -74,8 +74,8 @@ let playState = {
 //    Scoring for game and levels
         currentLevel = 1;
         score = 0;
-        levelsGoals = [0, 80,210,370,550,750,980,1210,1710];
-        levelGoal = levelsGoals[currentLevel];
+        levelsGoals = [80,210,370,550,750,980,1210,1710];
+        levelGoal = 80;
         // levelsGoals = [10,20,40,80,750,980,1210,1470];  //for testing
         // levelGoal = 10; //for testing
 
